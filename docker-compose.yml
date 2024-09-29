@@ -1,0 +1,27 @@
+version: '3.4'
+name: api-redis
+services:  
+  redis:
+        image: 'redis:latest'
+        container_name: redis
+        restart: always
+        environment:
+            - REDIS_PORT=6379
+        ports:
+            - '6379:6379'
+        command: [ "redis-server" ]
+        networks:
+            - redis_net
+  api:
+    container_name: api
+    image: ${DOCKER_REGISTRY-}api
+    ports:
+        - 8001:8080 
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+    networks:
+        - redis_net
+networks:
+  redis_net:
+    driver: bridge
